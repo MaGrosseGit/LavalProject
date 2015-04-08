@@ -12,7 +12,8 @@ public class PathDefinition : MonoBehaviour {
     public bool AtEndPoint { get; private set; }
 
     private bool ReachedEndPoint = false;
-    private Transform[] Points;
+    [HideInInspector]
+    public Transform[] Points;
 
     public void Awake(){
         Points = new Transform[pointsGroup.transform.childCount];

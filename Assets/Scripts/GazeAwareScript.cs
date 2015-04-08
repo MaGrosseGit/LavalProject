@@ -15,6 +15,7 @@ public class GazeAwareScript : MonoBehaviour {
     public float minLoudness;
     public float dynFluidMultiplier = 14;
     public FluidDynamics dynFluid;
+    public FollowPath pathToFollow;
 
     [HideInInspector]
     public float loudness = 0;
@@ -29,16 +30,23 @@ public class GazeAwareScript : MonoBehaviour {
     GazePointDataComponent gazePoint;
     GazeAwareComponent gazeAware;
 
+    Animator anim;
+
     MicControlC microphone;
 
 	void Start () {
+        anim = GetComponent<Animator>();
         gazeAware = GetComponent<GazeAwareComponent>();
         gazeAware.delayInMilliseconds = 0;
         gazePoint = GetComponent<GazePointDataComponent>();
 
         microphone = GetComponent<MicControlC>();
+        microphone.ableToHearMic = false;
+        microphone.micControl = MicControlC.micActivation.ConstantSpeak;
         microphone.enabled = false;
         GetComponent<AudioSource>().enabled = false;
+        pathToFollow.enabled = false;
+        transform.position = pathToFollow.Path.Points[0].transform.position;
 	}
 
 	void Update () {
@@ -52,7 +60,8 @@ public class GazeAwareScript : MonoBehaviour {
             microphone.enabled = true;
             GetComponent<AudioSource>().enabled = true;
 
-            renderer.material.color = Color.yellow; //<----------------------------------------------
+
+            //renderer.material.color = Color.yellow; //<----------------------------------------------
         }
 
         if (gazing)
@@ -64,7 +73,8 @@ public class GazeAwareScript : MonoBehaviour {
                 float distToCamF = Vector3.Dot(distToCamV, Camera.main.transform.forward);
                 Vector3 gazePos = Camera.main.ScreenToWorldPoint(new Vector3(lastGazePoint.Screen.x, lastGazePoint.Screen.y, distToCamF));
                 gazePos = new Vector3(gazePos.x, gazePos.y, transform.position.z);
-                if (Vector3.Distance(transform.position, gazePos) < gazeRadius){
+                if (Vector3.Distance((transform.position + (Vector3.up * (gazeRadius / 2))), gazePos) < gazeRadius)
+                {
                     radialImg.fillAmount = Mathf.Lerp(radialImg.fillAmount, 1.1f, Time.deltaTime * fillSpeed);
                     loudness = microphone.loudness;
                     if (loudness >= minLoudness)
@@ -82,7 +92,7 @@ public class GazeAwareScript : MonoBehaviour {
                     GetComponent<AudioSource>().enabled = false;
                     microCheck = false;
 
-                    renderer.material.color = Color.red; //<----------------------------------------------
+                    //renderer.material.color = Color.red; //<----------------------------------------------
                 }
                 if (radialImg.fillAmount >= 1 && microCheck)
                 {
@@ -91,8 +101,11 @@ public class GazeAwareScript : MonoBehaviour {
                     Destroy(radialLoaderTemp.gameObject);
                     microphone.enabled = false;
                     GetComponent<AudioSource>().enabled = false;
+                    anim.SetBool("Walk", true);
+                    pathToFollow.enabled = true;
+                    transform.localPosition = Vector3.zero;
 
-                    renderer.material.color = Color.blue; //<----------------------------------------------
+                    //renderer.material.color = Color.blue; //<----------------------------------------------
                 }
             }
         }
@@ -101,6 +114,6 @@ public class GazeAwareScript : MonoBehaviour {
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, gazeRadius);
+        Gizmos.DrawWireSphere(transform.position +(Vector3.up*(gazeRadius/2)), gazeRadius);
     }
 }

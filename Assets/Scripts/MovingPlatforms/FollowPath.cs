@@ -22,6 +22,7 @@ public class FollowPath : MonoBehaviour {
     public PathDefinition Path;
     public float Speed = 1;
     public float MaxDistanceToGoal = .1f;
+    public bool targetLookAt = true;
 
     public IEnumerator<Transform> _currentPoint;
 
@@ -49,6 +50,9 @@ public class FollowPath : MonoBehaviour {
             transform.position = Vector3.MoveTowards(transform.position, _currentPoint.Current.position, Time.deltaTime * Speed);
         else if (Type == FollowType.Lerp)
             transform.position = Vector3.Lerp(transform.position, _currentPoint.Current.position, Time.deltaTime * Speed);
+
+        if (targetLookAt)
+            transform.LookAt(_currentPoint.Current);
 
         var distanceSquared = (transform.position - _currentPoint.Current.position).sqrMagnitude;
         if (distanceSquared < Mathf.Pow(MaxDistanceToGoal, 2))
