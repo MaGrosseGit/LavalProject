@@ -12,6 +12,7 @@ public class EyePosScript : MonoBehaviour {
     public static Vector2 eyesPosScreen;
     public static Vector2 realEyesPos;
     public Canvas crossHair;
+    public float crossHairZval = 0;
     public int averageFramesNb = 40;
     public bool useLerp = false;
     public bool getDistance = false;
@@ -35,6 +36,7 @@ public class EyePosScript : MonoBehaviour {
         gazePoint = GetComponent<GazePointDataComponent>();
             eyesPosData = GetComponent<EyePositionDataComponent>();
         crossHair = Instantiate(crossHair, transform.position, Quaternion.identity) as Canvas;
+        crossHair.transform.parent = Camera.main.transform;
 
         for (int i = 0; i < averageFramesNb; i++)
         {
@@ -75,10 +77,12 @@ public class EyePosScript : MonoBehaviour {
             avg2D /= eyesPos2D.Count;
             avg3D /= eyesPos3D.Count;
 
+            Vector3 crosshairPos = new Vector3(avg3D.x, avg3D.y, Camera.main.transform.position.z + crossHairZval);
+
             eyesPos = (useLerp)? Vector3.Lerp(crossHair.transform.position, avg3D, Time.deltaTime * moveSpeed) : avg3D;
             eyesPosScreen = (useLerp)? Vector2.Lerp(crossHair.transform.position, avg2D, Time.deltaTime * moveSpeed) : avg2D;
 
-            crossHair.transform.position = eyesPos;
+            crossHair.transform.position = (useLerp) ? Vector3.Lerp(crossHair.transform.position, crosshairPos, Time.deltaTime * moveSpeed) : crosshairPos; ;
 
             curIndex++;
             if (curIndex >= eyesPos2D.Count)
