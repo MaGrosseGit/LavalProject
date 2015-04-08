@@ -242,14 +242,14 @@ public class FluidDynamics : MonoBehaviour {
         width = (int)Mathf.Ceil(Vector3.Distance(downLeftPos, downRightPos));
         height = (int)Mathf.Ceil(Vector3.Distance(upLeftPos, downLeftPos));
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-            transform.position = upLeftPos;
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-            transform.position = downLeftPos;
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-            transform.position = upRightPos;
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-            transform.position = downRightPos;
+        //if (Input.GetKeyDown(KeyCode.UpArrow))
+        //    transform.position = upLeftPos;
+        //if (Input.GetKeyDown(KeyCode.DownArrow))
+        //    transform.position = downLeftPos;
+        //if (Input.GetKeyDown(KeyCode.LeftArrow))
+        //    transform.position = upRightPos;
+        //if (Input.GetKeyDown(KeyCode.RightArrow))
+        //    transform.position = downRightPos;
 
         //Debug.Log("W,H = " + new Vector2(newWidth, newHeight));
         //Debug.Log("W,H = " + new Vector2(width, height));
