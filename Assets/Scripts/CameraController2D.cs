@@ -83,9 +83,9 @@ public class CameraController2D : MonoBehaviour
         }
     }
 
-    void HandleLayersChange()
+    public void HandleLayersChange(bool change = false)
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (change)
             curLayerId++;
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))

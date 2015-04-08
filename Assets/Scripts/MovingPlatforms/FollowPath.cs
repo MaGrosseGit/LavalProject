@@ -23,6 +23,9 @@ public class FollowPath : MonoBehaviour {
     public float Speed = 1;
     public float MaxDistanceToGoal = .1f;
     public bool targetLookAt = true;
+    public bool done;
+
+    public FollowPath[] followers;
 
     public IEnumerator<Transform> _currentPoint;
 
@@ -57,8 +60,16 @@ public class FollowPath : MonoBehaviour {
         var distanceSquared = (transform.position - _currentPoint.Current.position).sqrMagnitude;
         if (distanceSquared < Mathf.Pow(MaxDistanceToGoal, 2))
         {
-            if (ActionAfterGoal == ActionsAfterGoal.StopAfterGoal && Path.AtEndPoint)
+            if (ActionAfterGoal == ActionsAfterGoal.StopAfterGoal && Path.AtEndPoint){
+                for (int i = 0; i < followers.Length; i++)
+                {
+                    if (!followers[i].Path.AtEndPoint)
+                        return;
+                }
+                Camera.main.GetComponent<CameraController2D>().HandleLayersChange(true);
+                this.enabled = false;
                 return;
+            }
             else if (ActionAfterGoal == ActionsAfterGoal.ComeBackAndStop && Path.RestartingPoint)
                 return;
             else
